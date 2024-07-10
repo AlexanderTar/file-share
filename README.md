@@ -37,7 +37,7 @@ Deployment is done automatically on Vercel once the code is pushed to the main b
 - The app is not tested with large files. The file is uploaded to the blob storage directly using the Vercel API
 - There is some code duplication that could be refactored, in particular with regards to creating the share and updating the existing share
 - Error handling is very basic. There are error messages displayed to the user but they may not be very user-friendly
-- The UI is very basic and could be improved with extra transitions and effects
+- The UI is very basic and could be improved with extra transitions and effects. Thumbnails and previews are only available for images
 - The app is not optimized for mobile
 - Password protection is currently not implemented
 - The app is not localized

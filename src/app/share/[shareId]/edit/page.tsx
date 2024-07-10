@@ -3,7 +3,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { hostName, truncateFileName } from '@/app/_utils/stringUtils'
+import { hostName, pluralize, truncateFileName } from '@/app/_utils/stringUtils'
 import Controls from '@/app/_components/controls'
 import { upload } from '@vercel/blob/client'
 import moment from 'moment'
@@ -11,6 +11,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { Share, ShareRequest } from '@/app/_types/share'
 import { useShowError } from '@/app/_hooks/useShowError'
 import { toast } from 'sonner'
+import { PulseLoader } from 'react-spinners'
 
 const useUpdateShare = (
   shareId: string,
@@ -60,6 +61,8 @@ export default function Page({ params }: { params: ShareProps }) {
   const [newFiles, setNewFiles] = useState<
     (File & { preview: string; url: string; downloadUrl: string; contentType?: string })[]
   >([])
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadingFiles, setUploadingFiles] = useState<File[]>([])
 
   const showError = useShowError()
 
@@ -70,6 +73,8 @@ export default function Page({ params }: { params: ShareProps }) {
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
+      setIsUploading(true)
+      setUploadingFiles(acceptedFiles)
       const newFiles = (
         await Promise.all(
           acceptedFiles.map(async (file) => {
@@ -93,6 +98,8 @@ export default function Page({ params }: { params: ShareProps }) {
         )
       ).filter((file) => file !== null)
       setNewFiles((prevFiles) => [...prevFiles, ...newFiles])
+      setIsUploading(false)
+      setUploadingFiles([])
     },
     [showError],
   )
@@ -179,12 +186,20 @@ export default function Page({ params }: { params: ShareProps }) {
             ))}
           </div>
         </div>
-        <Controls
-          files={[...(share?.files || []), ...(newFiles || [])]}
-          onDropTriggered={open}
-          onSubmitted={onSubmit}
-          disabled={!name || !share?.files.length || isPending}
-        />
+        <div className="flex flex-col gap-2">
+          <Controls
+            files={[...(share?.files || []), ...(newFiles || [])]}
+            onDropTriggered={open}
+            onSubmitted={onSubmit}
+            disabled={!name || !share?.files.length || isPending}
+          />
+          {isUploading && (
+            <div className="-mx-5 flex w-full flex-row items-center justify-center gap-2">
+              <PulseLoader color="#fff" loading={true} size={10} />
+              <p className="text-lg">{`Uploading ${pluralize(uploadingFiles.length, 'file')}`}</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
