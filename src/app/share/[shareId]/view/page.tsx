@@ -4,6 +4,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { Share } from '@/app/_types/share'
 import { truncateFileName } from '@/app/_utils/stringUtils'
+import { useEffect } from 'react'
+import { notFound } from 'next/navigation'
 
 const useShare = (shareId: string) => {
   return useQuery({
@@ -24,6 +26,15 @@ interface ShareProps {
 export default function Page({ params }: { params: ShareProps }) {
   const { shareId } = params
   const { data: share } = useShare(shareId)
+
+  useEffect(() => {
+    if (!share) return
+    const now = new Date()
+    const expiresAt = new Date(share.expiresAt)
+    if (expiresAt < now) {
+      notFound()
+    }
+  }, [share])
 
   return (
     <div className="flex w-screen flex-col gap-4 px-10 py-10 md:flex-row">

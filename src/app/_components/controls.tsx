@@ -62,6 +62,7 @@ export default function Controls({
         </label>
         <input
           type="password"
+          name="password"
           className="text-md border-transparent bg-transparent outline-none placeholder:text-gray-200 focus:border-transparent focus:ring-0"
           placeholder="Password (optional)"
         />
