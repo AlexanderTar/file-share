@@ -1,0 +1,37 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider  = "postgresql"
+    // Uses connection pooling
+    url       = env("POSTGRES_PRISMA_URL")
+    // Uses direct connection, ⚠️ make sure to keep this to `POSTGRES_URL_NON_POOLING`
+    // or you'll have dangling databases from migrations
+    directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model File {
+    id          Int      @id @default(autoincrement())
+    name        String
+    contentType String?
+    url         String   @unique
+    downloadUrl String
+    createdAt   DateTime @default(now())
+    shareId     Int?
+    share       Share?   @relation(fields: [shareId], references: [id])
+
+    @@map("files")
+}
+
+model Share {
+    id        Int      @id @default(autoincrement())
+    shareId   String   @unique
+    name      String
+    createdAt DateTime @default(now())
+    expiresAt DateTime
+    password  String?
+    files     File[]
+
+    @@map("shares")
+}
