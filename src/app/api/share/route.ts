@@ -46,6 +46,7 @@ export async function POST(request: NextRequest) {
         url: file.url,
         contentType: file.contentType,
         downloadUrl: file.downloadUrl,
+        size: file.size,
       })),
       expiresAt: share.expiresAt.getTime(),
     })

@@ -1,6 +1,7 @@
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client'
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
+import { head } from '@vercel/blob'
 
 const prisma = new PrismaClient()
 
@@ -26,12 +27,14 @@ export async function POST(request: Request) {
         console.log('Blob upload completed', blob, tokenPayload)
 
         try {
+          const meta = await head(blob.url)
           await prisma.file.create({
             data: {
               name: blob.pathname,
               url: blob.url,
               contentType: blob.contentType,
               downloadUrl: blob.downloadUrl,
+              size: meta.size,
             },
           })
         } catch (error) {

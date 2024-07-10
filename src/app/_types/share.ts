@@ -1,8 +1,12 @@
 import { File } from './file'
 
+export interface ShareFile {
+  url: string
+}
+
 export interface ShareRequest {
   name: string
-  files: File[]
+  files: ShareFile[]
   expiresAt: number
   password?: string
 }

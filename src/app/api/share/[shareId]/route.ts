@@ -32,6 +32,7 @@ export async function GET(_: NextRequest, { params }: { params: { shareId: strin
       url: file.url,
       contentType: file.contentType,
       downloadUrl: file.downloadUrl,
+      size: file.size,
     })),
     expiresAt: share.expiresAt.getTime(),
   })
@@ -93,6 +94,7 @@ export async function PUT(request: NextRequest, { params }: { params: { shareId:
         url: file.url,
         contentType: file.contentType,
         downloadUrl: file.downloadUrl,
+        size: file.size,
       })),
       expiresAt: updated.expiresAt.getTime(),
     })

@@ -3,4 +3,5 @@ export interface File {
   url: string
   contentType?: string
   downloadUrl: string
+  size: number
 }

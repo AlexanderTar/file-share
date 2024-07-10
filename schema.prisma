@@ -17,6 +17,7 @@ model File {
     contentType String?
     url         String   @unique
     downloadUrl String
+    size        Int
     createdAt   DateTime @default(now())
     shareId     Int?
     share       Share?   @relation(fields: [shareId], references: [id])
