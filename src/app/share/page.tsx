@@ -95,6 +95,7 @@ export default function Page() {
       const host = hostName(window.location.href)
       navigator.clipboard.writeText(`${host}/share/${data.id}/view`)
       toast.success('Successfully copied the link to clipboard!')
+      router.prefetch(`/share/${data.id}/edit`)
       router.push(`/share/${data.id}/edit`)
     },
   })
