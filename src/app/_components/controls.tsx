@@ -71,7 +71,7 @@ export default function Controls({
           disabled={disabled}
           className="text-primary-foreground hover:scale-1025 h-10 w-full rounded-lg bg-indigo-700 px-4 py-2 font-bold shadow-lg transition duration-300 ease-in-out active:scale-95 active:after:scale-[1.0] disabled:pointer-events-none disabled:opacity-50"
         >
-          Copy link
+          Share
         </button>
       </form>
     </div>

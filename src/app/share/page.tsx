@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { hostName, pluralize, truncateFileName } from '@/app/_utils/stringUtils'
 import Controls from '@/app/_components/controls'
@@ -40,15 +40,14 @@ export default function Page() {
   const [files, setFiles] = useState<
     (File & { preview: string; url: string; downloadUrl: string; contentType?: string })[]
   >([])
-  const [isUploading, setIsUploading] = useState(false)
   const [uploadingFiles, setUploadingFiles] = useState<File[]>([])
+  const isUploading = useMemo(() => !!uploadingFiles.length, [uploadingFiles])
 
   const showError = useShowError()
   const router = useRouter()
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
-      setIsUploading(true)
       setUploadingFiles(acceptedFiles)
       const newFiles = (
         await Promise.all(
@@ -73,7 +72,6 @@ export default function Page() {
         )
       ).filter((file) => file !== null)
       setFiles((prevFiles) => [...prevFiles, ...newFiles])
-      setIsUploading(false)
       setUploadingFiles([])
     },
     [showError],
@@ -95,7 +93,6 @@ export default function Page() {
       const host = hostName(window.location.href)
       navigator.clipboard.writeText(`${host}/share/${data.id}/view`)
       toast.success('Successfully copied the link to clipboard!')
-      router.prefetch(`/share/${data.id}/edit`)
       router.push(`/share/${data.id}/edit`)
     },
   })

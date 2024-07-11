@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { hostName, pluralize, truncateFileName } from '@/app/_utils/stringUtils'
 import Controls from '@/app/_components/controls'
@@ -61,8 +61,8 @@ export default function Page({ params }: { params: ShareProps }) {
   const [newFiles, setNewFiles] = useState<
     (File & { preview: string; url: string; downloadUrl: string; contentType?: string })[]
   >([])
-  const [isUploading, setIsUploading] = useState(false)
   const [uploadingFiles, setUploadingFiles] = useState<File[]>([])
+  const isUploading = useMemo(() => !!uploadingFiles.length, [uploadingFiles])
 
   const showError = useShowError()
 
@@ -73,7 +73,6 @@ export default function Page({ params }: { params: ShareProps }) {
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
-      setIsUploading(true)
       setUploadingFiles(acceptedFiles)
       const newFiles = (
         await Promise.all(
@@ -98,7 +97,6 @@ export default function Page({ params }: { params: ShareProps }) {
         )
       ).filter((file) => file !== null)
       setNewFiles((prevFiles) => [...prevFiles, ...newFiles])
-      setIsUploading(false)
       setUploadingFiles([])
     },
     [showError],
